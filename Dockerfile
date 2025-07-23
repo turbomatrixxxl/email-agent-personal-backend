@@ -47,8 +47,6 @@ RUN npm install
 
 COPY . .
 
-RUN rm -rf node_modules/.cache tests vechiulApp.js
-
 EXPOSE 3000
 
 CMD ["node", "app.js"]
