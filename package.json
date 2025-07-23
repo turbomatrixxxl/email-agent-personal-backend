@@ -1,0 +1,28 @@
+{
+  "name": "email-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "email",
+    "agent",
+    "openai",
+    "automation"
+  ],
+  "author": "Radu Bogdan Naramzoiu",
+  "license": "MIT",
+  "description": "Agent AI pentru clasificarea și gestionarea automată a emailurilor.",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "googleapis": "^152.0.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.5",
+    "puppeteer": "18.2.1",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "1.31.0"
+  }
+}
