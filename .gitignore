@@ -4,20 +4,17 @@ node_modules/
 # Env files
 .env
 
-# Tokenuri OAuth
+# OAuth tokens
 token*.json
 tokens/
 
-# QR code imagine generată
+# Generated QR code image
 qr-code.png
 
-# WhatsApp web auth folder
+# WhatsApp Web session and cache
 .wwebjs_auth/
 .wwebjs_cache/
 
-# Cache Puppeteer
-C:TempPuppeteerCache/
-
-# Fișiere temporare și backup
+# Temporary and backup files
 lastMessage.json
 vechiulApp.js

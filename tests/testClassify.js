@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import classifyEmail from "./classifyEmail.js";
+import classifyEmail from "../classifyEmail.js";
 
 async function test() {
   try {
