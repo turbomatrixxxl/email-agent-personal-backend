@@ -1,0 +1,9 @@
+node_modules
+# tokens
+.env
+*.log
+*.png
+# .wwebjs_auth
+# .wwebjs_cache
+tests
+vechiulApp.js

@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import fs from "fs";
-import path from "path";
 import "dotenv/config";
 
 const senderEmail = process.env.SECRET_EMAIL;
@@ -15,9 +14,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendQrCodeEmail = async () => {
-  const qrImagePath = path.resolve("qr-code.png");
-
+/**
+ * Trimite QR code-ul prin email.
+ * @param {string} qrImagePath - calea către fișierul PNG cu codul QR
+ */
+export const sendQrCodeEmail = async (qrImagePath) => {
   if (!fs.existsSync(qrImagePath)) {
     throw new Error("QR code image not found. Make sure qr-code.png exists.");
   }
@@ -27,12 +28,15 @@ export const sendQrCodeEmail = async () => {
     to: recipientEmail,
     subject: "WhatsApp QR Code",
     text: "Scan the attached QR code with your WhatsApp mobile app to log in.",
-    html: "<p>Scan the attached QR code with your WhatsApp mobile app to log in.</p>",
+    html: `
+      <p>Scan the QR code below with your WhatsApp mobile app to log in:</p>
+      <img src="cid:qr-code" alt="QR Code" />
+    `,
     attachments: [
       {
         filename: "qr-code.png",
         path: qrImagePath,
-        cid: "qr-code",
+        cid: "qr-code", // ID pentru afișare în HTML
       },
     ],
   };

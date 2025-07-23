@@ -12,6 +12,9 @@ import {
 import cron from "node-cron";
 import client from "./whatsappClient.js";
 
+// Importăm funcția pentru autentificare interactivă
+import { getTokenInteractive } from "./getToken.js";
+
 const labelMap = {
   Urgente: "🔔 Urgente",
   Joburi: "💼 Joburi",
@@ -30,8 +33,29 @@ async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function verifyAllTokens() {
+  for (const accountKey of GMAIL_ACCOUNTS) {
+    const authClient = await loadToken(accountKey);
+    if (!authClient) {
+      console.log(
+        `⚠️ Token pentru ${accountKey} lipsește sau este invalid. Încep autentificarea interactivă...`
+      );
+      try {
+        await getTokenInteractive(accountKey);
+        console.log(`✅ Token nou pentru ${accountKey} generat cu succes.`);
+      } catch (err) {
+        console.error(
+          `❌ Eroare la autentificarea contului ${accountKey}:`,
+          err.message
+        );
+      }
+    } else {
+      console.log(`✅ Token pentru ${accountKey} este valid.`);
+    }
+  }
+}
+
 async function processAccount(accountKey, sendSummary = false) {
-  // Resetăm cache-ul de labeluri pentru contul curent
   Object.keys(LABEL_CACHE).forEach((key) => delete LABEL_CACHE[key]);
 
   try {
@@ -142,7 +166,8 @@ async function processAccount(accountKey, sendSummary = false) {
       const category = await classifyEmail(subject, fromRaw, emailBody);
       const labelName = labelMap[category] || null;
 
-      const link = `https://mail.google.com/mail/u/0/#inbox/${message.id}`;
+      const emailUser = accountKey.includes("@") ? accountKey : "me";
+      const link = `https://mail.google.com/mail/?authuser=${emailUser}#inbox/${message.id}`;
 
       let movedSuccessfully = false;
 
@@ -256,6 +281,9 @@ async function processAccount(accountKey, sendSummary = false) {
 }
 
 async function run(sendSummary = false) {
+  // Mai întâi verificăm toți tokenii și regenerăm dacă este nevoie
+  await verifyAllTokens();
+
   let fullSummary = "";
   for (const accountKey of GMAIL_ACCOUNTS) {
     const result = await processAccount(accountKey, sendSummary);
@@ -279,7 +307,9 @@ async function sendWhatsAppSummary(summary) {
   try {
     await delay(3000);
     await client.sendMessage(formattedNumber, summary);
-  } catch {}
+  } catch (error) {
+    console.error("❌ Eroare la trimiterea mesajului WhatsApp:", error.message);
+  }
 }
 
 client.on("ready", async () => {
@@ -289,12 +319,17 @@ client.on("ready", async () => {
   const formattedNumber = `${testNumber}@c.us`;
 
   try {
-    await delay(3000);
-    await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
+    // await delay(3000);
+    // await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
 
     const summary = await run(true);
     await sendWhatsAppSummary(summary);
-  } catch {}
+  } catch (err) {
+    console.error(
+      "❌ Eroare la trimiterea mesajului pe WhatsApp:",
+      err.message
+    );
+  }
 });
 
 cron.schedule("30 5 * * *", async () => {
@@ -302,6 +337,6 @@ cron.schedule("30 5 * * *", async () => {
   await sendWhatsAppSummary(summary);
 });
 
-cron.schedule("0 */6 * * *", async () => {
+cron.schedule("0 0,6,12,18 * * *", async () => {
   await run(false);
 });

@@ -12,7 +12,7 @@ const { Client, LocalAuth } = pkg;
 const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
-    headless: false, // schimbi în true pe server
+    headless: true, // schimbi în true pe server
     executablePath: executablePath(),
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     takeoverOnConflict: true,
@@ -26,10 +26,16 @@ client.on("qr", async (qr) => {
   const qrImagePath = path.resolve("qr-code.png");
 
   try {
-    await qrcode.toFile(qrImagePath, qr);
+    await qrcode.toFile(qrImagePath, qr, {
+      width: 250, // sau 600 pentru siguranță
+      margin: 2,
+      errorCorrectionLevel: "H", // high quality
+    });
+
     console.log("✅ QR salvat ca qr-code.png");
 
-    await sendQrCodeEmail();
+    await new Promise((res) => setTimeout(res, 500)); // așteaptă 0.5 secunde
+    await sendQrCodeEmail(qrImagePath); // ✅ trimite calea fișierului
     console.log("✅ Email cu QR trimis cu succes!");
   } catch (err) {
     console.error("❌ Eroare la generarea sau trimiterea QR-ului:", err);

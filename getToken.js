@@ -1,11 +1,21 @@
+// getTokens.js
+
+import dotenv from "dotenv";
+dotenv.config();
+
 import readline from "readline";
 import oAuth2Client from "./gmailClient.js";
 import fs from "fs";
 import path from "path";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+const GMAIL_ACCOUNTS = process.env.GMAIL_ACCOUNTS
+  ? process.env.GMAIL_ACCOUNTS.split(",").map((acc) => acc.trim())
+  : [];
+
+const TOKEN_PATHS = {};
+
+GMAIL_ACCOUNTS.forEach((account) => {
+  TOKEN_PATHS[account] = `token.${account}.json`;
 });
 
 function getAuthUrl() {
@@ -21,51 +31,72 @@ function getAuthUrl() {
   });
 }
 
-async function main(accountKey) {
-  console.log("\n🔗 Deschide acest URL în browser și autorizează aplicația:\n");
-  console.log(getAuthUrl() + "\n");
+/**
+ * Funcție async care deschide prompt-ul, primește codul, obține tokenul și îl salvează.
+ * @param {string} accountKey - Cheia contului (ex: turbomatrixxxl)
+ * @returns {Promise<Object>} tokens
+ */
+export async function getTokenInteractive(accountKey) {
+  return new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
 
-  rl.question("👉 Introdu codul de autorizare aici: ", async (code) => {
-    try {
-      const { tokens } = await oAuth2Client.getToken(code);
-      oAuth2Client.setCredentials(tokens);
+    console.log(
+      "\n🔗 Deschide acest URL în browser și autorizează aplicația:\n"
+    );
+    console.log(getAuthUrl() + "\n");
 
-      const TOKEN_DIR = path.resolve("./tokens");
-      const TOKEN_PATHS = {
-        turbomatrixxxl: "token.turbomatrixxxl.json",
-        radubogdannaramzoiu: "token.radubogdannaramzoiu.json",
-        creativeinfinitysrl: "token.creativeinfinitysrl.json",
-      };
+    rl.question("👉 Introdu codul de autorizare aici: ", async (code) => {
+      try {
+        const { tokens } = await oAuth2Client.getToken(code);
+        oAuth2Client.setCredentials(tokens);
 
-      const fileName = TOKEN_PATHS[accountKey];
-      if (!fileName) {
-        console.error(`❌ Cont necunoscut: ${accountKey}`);
-        process.exit(1);
+        const TOKEN_DIR = path.resolve("./tokens");
+
+        const fileName = TOKEN_PATHS[accountKey];
+        if (!fileName) {
+          reject(new Error(`❌ Cont necunoscut: ${accountKey}`));
+          rl.close();
+          return;
+        }
+
+        if (!fs.existsSync(TOKEN_DIR)) {
+          fs.mkdirSync(TOKEN_DIR, { recursive: true });
+        }
+
+        const fullPath = path.join(TOKEN_DIR, fileName);
+        fs.writeFileSync(fullPath, JSON.stringify(tokens, null, 2));
+        console.log(`✅ Token salvat în ${fullPath}`);
+
+        rl.close();
+        resolve(tokens);
+      } catch (error) {
+        rl.close();
+        reject(error);
       }
-
-      // Crează folderul tokens dacă nu există
-      if (!fs.existsSync(TOKEN_DIR)) {
-        fs.mkdirSync(TOKEN_DIR, { recursive: true });
-      }
-
-      const fullPath = path.join(TOKEN_DIR, fileName);
-
-      fs.writeFileSync(fullPath, JSON.stringify(tokens, null, 2));
-      console.log(`✅ Token salvat în ${fullPath}`);
-    } catch (error) {
-      console.error("❌ Eroare la obținerea tokenului:", error.message);
-    } finally {
-      rl.close();
-    }
+    });
   });
 }
 
-const accountKey = process.argv[2];
-if (!accountKey) {
-  console.error(
-    "❌ Te rog specifică un cont: turbomatrixxxl, radubogdannaramzoiu sau creativeinfinitysrl"
-  );
-  process.exit(1);
-}
+// Dacă este rulat direct din CLI, păstrează comportamentul
+if (
+  import.meta.url === process.argv[1] ||
+  process.argv[1].endsWith("getTokens.js")
+) {
+  const accountKey = process.argv[2];
+  if (!accountKey) {
+    console.error(
+      "❌ Te rog specifică un cont: turbomatrixxxl, radubogdannaramzoiu sau creativeinfinitysrl"
+    );
+    process.exit(1);
+  }
 
-main(accountKey);
+  getTokenInteractive(accountKey)
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("❌ Eroare la obținerea tokenului:", err.message);
+      process.exit(1);
+    });
+}
