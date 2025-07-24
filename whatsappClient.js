@@ -105,9 +105,11 @@ client.on("qr", async (qr) => {
 
     console.log("✅ QR salvat ca qr-code.png");
 
+    await new Promise((res) => setTimeout(res, 500));
     await sendQrCodeEmail(qrImagePath);
-    qrSent = true; // ✅ marcat ca trimis
     console.log("📤 Email cu QR trimis cu succes!");
+
+    qrSent = true; // ✅ NU se mai retrimite
   } catch (err) {
     console.error("❌ Eroare la generarea sau trimiterea QR-ului:", err);
   }
