@@ -342,16 +342,16 @@ cron.schedule("0 22,4,10,16 * * *", async () => {
 });
 
 // Funcția care se execută la fiecare 5 minute
-function jobTest() {
-  console.log(
-    `[${new Date().toLocaleTimeString()}] Test: cron executat cu succes`
-  );
-}
+// function jobTest() {
+//   console.log(
+//     `[${new Date().toLocaleTimeString()}] Test: cron executat cu succes`
+//   );
+// }
 
 // Setează cron să ruleze din 5 în 5 minute
-cron.schedule("*/5 * * * *", () => {
-  jobTest();
-});
+// cron.schedule("*/5 * * * *", () => {
+//   jobTest();
+// });
 
 // import dotenv from "dotenv";
 // dotenv.config();

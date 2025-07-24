@@ -105,7 +105,7 @@ client.on("qr", async (qr) => {
 
     console.log("✅ QR salvat ca qr-code.png");
 
-    await new Promise((res) => setTimeout(res, 500));
+    await new Promise((res) => setTimeout(res, 2000));
     await sendQrCodeEmail(qrImagePath);
     console.log("📤 Email cu QR trimis cu succes!");
 
