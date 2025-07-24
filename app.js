@@ -613,37 +613,37 @@ async function sendWhatsAppSummary(summary) {
   }
 }
 
-// client.on("ready", async () => {
-//   console.log("✅ WhatsApp client is ready.");
+client.on("ready", async () => {
+  console.log("✅ WhatsApp client is ready.");
 
-//   const testNumber = process.env.WHATSAPP_TARGET;
-//   if (!testNumber) return;
+  const testNumber = process.env.WHATSAPP_TARGET;
+  if (!testNumber) return;
 
-//   const formattedNumber = `${testNumber}@c.us`;
+  const formattedNumber = `${testNumber}@c.us`;
 
-//   try {
-//     await delay(3000);
-//     console.log("👉 Trimit mesaj către:", formattedNumber);
+  try {
+    await delay(3000);
+    console.log("👉 Trimit mesaj către:", formattedNumber);
 
-//     await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
+    await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
 
-//     const summary = await run(true);
-//     await sendWhatsAppSummary(summary);
-//     console.log("📤 Rezumat trimis pe WhatsApp!");
+    const summary = await run(true);
+    await sendWhatsAppSummary(summary);
+    console.log("📤 Rezumat trimis pe WhatsApp!");
 
-//     // 🔚 Așteaptă 60 de secunde și apoi închide aplicația complet
-//     setTimeout(() => {
-//       console.log("⏹️ Închidere aplicație după trimitere...");
-//       process.exit(0);
-//     }, 60000);
-//   } catch (err) {
-//     console.error(
-//       "❌ Eroare la trimiterea mesajului pe WhatsApp:",
-//       err.message
-//     );
-//     process.exit(1); // oprește cu cod de eroare dacă e cazul
-//   }
-// });
+    // 🔚 Așteaptă 60 de secunde și apoi închide aplicația complet
+    // setTimeout(() => {
+    //   console.log("⏹️ Închidere aplicație după trimitere...");
+    //   process.exit(0);
+    // }, 60000);
+  } catch (err) {
+    console.error(
+      "❌ Eroare la trimiterea mesajului pe WhatsApp:",
+      err.message
+    );
+    // process.exit(1); // oprește cu cod de eroare dacă e cazul
+  }
+});
 
 client.on("message", (msg) => {
   console.log("📩 Mesaj primit:", msg.body);
@@ -668,14 +668,19 @@ app.get("/run", async (req, res) => {
       .send(`✅ Run completat (${shouldSendSummary ? "cu" : "fără"} rezumat).`);
 
     // Închide serverul după execuție
-    setTimeout(() => {
-      console.log("🛑 Oprire automată după finalizarea jobului.");
-      process.exit(0);
-    }, 60000); // 60 de secunde delay pentru a permite trimiterea răspunsului
+    // setTimeout(() => {
+    //   console.log("🛑 Oprire automată după finalizarea jobului.");
+    //   process.exit(0);
+    // }, 60000); // 60 de secunde delay pentru a permite trimiterea răspunsului
   } catch (err) {
     console.error("❌ Eroare /run:", err.message);
     res.status(500).send("Eroare la execuția jobului.");
   }
+});
+
+// Adaugă acest endpoint ca fallback pentru Railway
+app.get("/", (req, res) => {
+  res.status(200).send("✅ Email Agent activ. Endpoint /run disponibil.");
 });
 
 app.listen(PORT, () => {
