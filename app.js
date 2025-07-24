@@ -617,8 +617,23 @@ client.on("ready", async () => {
   console.log("WhatsApp client is ready.");
 
   // Rulează o dată doar pentru test
-  const summary = await run(true);
-  await sendWhatsAppSummary(summary);
+  const testNumber = process.env.WHATSAPP_TARGET;
+  if (!testNumber) return;
+
+  const formattedNumber = `${testNumber}@c.us`;
+
+  try {
+    await delay(3000);
+    await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
+
+    const summary = await run(true);
+    await sendWhatsAppSummary(summary);
+  } catch (err) {
+    console.error(
+      "❌ Eroare la trimiterea mesajului pe WhatsApp:",
+      err.message
+    );
+  }
 });
 
 // ✅ Endpoint pentru scheduler extern
