@@ -624,6 +624,8 @@ client.on("ready", async () => {
 
   try {
     await delay(3000);
+    console.log("👉 Trimit mesaj către:", formattedNumber);
+
     await client.sendMessage(formattedNumber, "Test mesaj scurt cu delay 🚀");
 
     const summary = await run(true);
@@ -635,6 +637,10 @@ client.on("ready", async () => {
       err.message
     );
   }
+});
+
+client.on("message", (msg) => {
+  console.log("📩 Mesaj primit:", msg.body);
 });
 
 // ✅ Endpoint pentru scheduler extern
