@@ -614,9 +614,8 @@ async function sendWhatsAppSummary(summary) {
 }
 
 client.on("ready", async () => {
-  console.log("WhatsApp client is ready.");
+  console.log("✅ WhatsApp client is ready.");
 
-  // Rulează o dată doar pentru test
   const testNumber = process.env.WHATSAPP_TARGET;
   if (!testNumber) return;
 
@@ -630,12 +629,19 @@ client.on("ready", async () => {
 
     const summary = await run(true);
     await sendWhatsAppSummary(summary);
-    console.log("📤 Rezumat trimis pe Whatsapp !");
+    console.log("📤 Rezumat trimis pe WhatsApp!");
+
+    // 🔚 Așteaptă 60 de secunde și apoi închide aplicația complet
+    setTimeout(() => {
+      console.log("⏹️ Închidere aplicație după trimitere...");
+      process.exit(0);
+    }, 2000);
   } catch (err) {
     console.error(
       "❌ Eroare la trimiterea mesajului pe WhatsApp:",
       err.message
     );
+    process.exit(1); // oprește cu cod de eroare dacă e cazul
   }
 });
 
@@ -660,6 +666,12 @@ app.get("/run", async (req, res) => {
     res
       .status(200)
       .send(`✅ Run completat (${shouldSendSummary ? "cu" : "fără"} rezumat).`);
+
+    // Închide serverul după execuție
+    setTimeout(() => {
+      console.log("🛑 Oprire automată după finalizarea jobului.");
+      process.exit(0);
+    }, 60000); // 60 de secunde delay pentru a permite trimiterea răspunsului
   } catch (err) {
     console.error("❌ Eroare /run:", err.message);
     res.status(500).send("Eroare la execuția jobului.");
