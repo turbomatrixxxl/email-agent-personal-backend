@@ -628,6 +628,7 @@ client.on("ready", async () => {
 
     const summary = await run(true);
     await sendWhatsAppSummary(summary);
+    console.log("📤 Rezumat trimis pe Whatsapp !");
   } catch (err) {
     console.error(
       "❌ Eroare la trimiterea mesajului pe WhatsApp:",
