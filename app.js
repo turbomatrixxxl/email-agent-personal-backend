@@ -332,11 +332,11 @@ client.on("ready", async () => {
   }
 });
 
-cron.schedule("30 5 * * *", async () => {
+cron.schedule("30 2 * * *", async () => {
   const summary = await run(true);
   await sendWhatsAppSummary(summary);
 });
 
-cron.schedule("0 0,6,12,18 * * *", async () => {
+cron.schedule("0 21,3,9,15 * * *", async () => {
   await run(false);
 });
