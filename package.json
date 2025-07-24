@@ -17,6 +17,7 @@
   "description": "Agent AI pentru clasificarea și gestionarea automată a emailurilor.",
   "dependencies": {
     "dotenv": "^17.2.0",
+    "express": "^5.1.0",
     "googleapis": "^152.0.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.5",
