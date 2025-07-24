@@ -1,0 +1,17 @@
+2025/07/24-08:31:13.791 1870 Reusing MANIFEST C:\AI agents\email-agent -clone\email-agent-personal-backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/24-08:31:13.792 1870 Recovering log #102
+2025/07/24-08:31:14.002 1870 Reusing old log C:\AI agents\email-agent -clone\email-agent-personal-backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000102.log 
+2025/07/24-08:31:18.809 1784 Level-0 table #109: started
+2025/07/24-08:31:18.859 1784 Level-0 table #109: 903677 bytes OK
+2025/07/24-08:31:18.866 1784 Delete type=0 #102
+2025/07/24-08:31:18.867 1784 Manual compaction at level-0 from '\x00\x1c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1d\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/07/24-08:31:22.490 389c Compacting 1@1 + 3@2 files
+2025/07/24-08:31:22.791 389c Generated table #110@1: 43336 keys, 2204517 bytes
+2025/07/24-08:31:22.948 389c Generated table #111@1: 22748 keys, 2172377 bytes
+2025/07/24-08:31:23.235 389c Generated table #112@1: 58175 keys, 2205764 bytes
+2025/07/24-08:31:23.235 389c Compacted 1@1 + 3@2 files => 6582658 bytes
+2025/07/24-08:31:23.241 389c compacted to: files[ 0 0 3 0 0 0 0 ]
+2025/07/24-08:31:23.241 389c Delete type=2 #104
+2025/07/24-08:31:23.241 389c Delete type=2 #105
+2025/07/24-08:31:23.241 389c Delete type=2 #106
+2025/07/24-08:31:23.241 389c Delete type=2 #109

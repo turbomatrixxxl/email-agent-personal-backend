@@ -12,7 +12,6 @@ tokens/
 qr-code.png
 
 # WhatsApp Web session and cache
-.wwebjs_auth/
 .wwebjs_cache/
 
 # Temporary and backup files
